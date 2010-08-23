@@ -9,7 +9,7 @@
   
 	<?php foreach($query->result() as $row): ?>
 
-	<p>Comment: <?=$row->body ?></p>
+	<p>Commented: <?=$row->body ?></p>
         <p>By: <?=$row->author ?></p>
 	<hr>	
 	<?php endforeach; ?>

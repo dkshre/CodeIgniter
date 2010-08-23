@@ -31,7 +31,7 @@ class Blog extends Controller{
 
 	function comments()
         {
-	   	$data['title'] = "My Comment Title Smart";
+	   	$data['title'] = "My Comment Title Smarter";
 		$data['heading'] = "My Comment Heading";
            
                 $this->db->where('entry_id', $this->uri->segment(3));

@@ -11,7 +11,7 @@
 |	http://example.com/
 |
 */
-$config['base_url']	= "http://172.16.84.156/CodeIgniter/";
+$config['base_url']	= "http://dkshre-laptop.cgifederal.com/CodeIgniter/";
 
 /*
 |--------------------------------------------------------------------------
