@@ -57,8 +57,29 @@ class Dictionary extends Controller{
 
        }
 
+     function entry_random_display()
+     {
+         #$this->db->select('SELECT * FROM entry ORDER BY RAND() LIMIT 1'):
+       # this-db->select('select word, type, definition, etymology, usages from entry');
+        $this->db->order_by('word','random');
+        $this->db->limit(1);
 
+       $data['query'] = $this->db->get('entry');
+       $this->load->view('dictionary_random_view', $data);
+      
+      }
+      
+     function content_display()
+     {
+     #  echo "hello from google";
 
+    $url = "http://www.google.com";
+    $str = file_get_contents($url);
+     echo $str;
 
+       #echo "dfdfdf <div id='dkshre'> hellow world </div>dfdfdfd";
+       # $this->load->view('content_view');
+     }
 
 }
+?>
