@@ -71,11 +71,11 @@ class Dictionary extends Controller{
       
      function content_display()
      {
-     #  echo "hello from google";
+       echo "hello from content_display method of controller";
 
-    $url = "http://www.google.com";
-    $str = file_get_contents($url);
-     echo $str;
+    #$url = "http://www.google.com";
+    #$str = file_get_contents($url);
+     #echo $str;
 
        #echo "dfdfdf <div id='dkshre'> hellow world </div>dfdfdfd";
        # $this->load->view('content_view');
