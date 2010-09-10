@@ -11,10 +11,10 @@
 |	http://example.com/
 |
 */
-$config['base_url']	= "http://dkshre-laptop.cgifederal.com/CodeIgniter/";
-
+#$config['base_url']	= "http://dkshre-laptop.cgifederal.com/CodeIgniter/";
+$config['base_url']	= "http://localhost/CodeIgniter/";
 /*
-|--------------------------------------------------------------------------
+--------------------------------------------------------------------------
 | Index File
 |--------------------------------------------------------------------------
 |

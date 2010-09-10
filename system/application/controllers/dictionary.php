@@ -4,7 +4,6 @@
 
 class Dictionary extends Controller{
 
-
 	function Dictionary()
 	{
 		parent::Controller();
@@ -16,57 +15,85 @@ class Dictionary extends Controller{
 
 	function index()
 	{
-
-              #  echo 'this is a test';
               # $this->load->view('blog_view');
-	   	$data['title'] = "Dictionary";
-		$data['heading'] = "Dictionary Entry";
-                
-//url
-//$url = 'http://www.imdb.com/title/tt0367882/';
-$url ='http://dkshre-laptop.cgifederal.com/CodeIgniter/index.php/dictionary/entry_gre_display';
+	   	$data['title'] = "Understanding words";
+		$data['heading'] = "All topics home";
+            
+               $this->db->select('ut.topicid, ut.topic'); 
+               $this->db->from('usertopics ut');
+               $data['query'] = $this->db->get();
 
-//get the page content
-$imdb_content = get_data($url);
-//parse for product name
-$name = get_match('/<title>(.*)<\/title>/isU',$imdb_content);
-
-echo $name;
-
-                $this->load->view('dictionary_entry', $data);
+                $this->load->view('dictionary_view', $data);
 		#$data['todo'] = array('Clean house', 'eat lunch', 'call mom');
 		#$data['query'] = $this->db->get('entries');
  		#$this->load->view('blog_view', $data);
-
 	}
+
+
 
 
        function entry_insert()
        {
-
-            $this->load->database('dictionary');
-            $this->db->insert('entry', $_POST);
-
- 	$data['query'] = $this->db->get('entry');
-
-            
- 		$this->load->view('dictionary_view', $data);
+           # $this->load->database('dictionary');
+          #  $this->db->insert('entry', $_POST);
+ 	  # $data['query'] = $this->db->get('entry');        
+ 	  # $this->load->view('dictionary_view', $data);
        }
 
-       function entry_display()
-      {
 
+	function word_insert(){
+		$data['title'] = "Catchword";
+		$data['heading'] = "Enter a new word";  
+		$this->load->view('wordentry_view', $data);
+	}
 
-	   	#$data['title'] = "My Comment Title Smarter";
-		#$data['heading'] = "My Comment Heading";
+      function userword_insert(){
+            #insert ino userwords tables
+            # do validation make sure word is a valid word(word exists in words tables
+            # do validation make sure word is not already entered for this list
+             #(for given topicid there is not preexisted that word
            
-              #  $this->db->where('entry_id', $this->uri->segment(3));
-	 	$data['query'] = $this->db->get('entry');
+        $this->db->select('uw.lemma'); 
+        $this->db->from('userwords uw');
+        $this->db->where('uw.lemma',$_POST['lemma']);
+        $this->db->where('uw.topicid', $_POST['topicid']);
+        $checkwordinUW = $this->db->get();
+   
+        $data['message'] = "test"; 
 
-            
- 		$this->load->view('dictionary_view', $data);
+	if ($checkwordinUW->num_rows() > 0)
+	{ 
+	   #echo $checkwordinUW->row(1)->lemma;
+	  # echo "<pre>word previously entered for this topic</pre>";
+	# $this->load->view('dictionary/word_insert/'.$_POST['topicid'], $data);
+        redirect('dictionary/word_insert/'.$_POST['topicid'].'/preexisted', $data);
+	} 
+         else
+         {     
+		#new word for the topic, make sure it is a valid word
+		$this->db->select('wd.lemma'); 
+		$this->db->from('words wd');
+		$this->db->where('wd.lemma',$_POST['lemma'] );
+		$checkword = $this->db->get();
+		if ($checkword->num_rows() > 0)
+		{ 
+			# echo $checkword->row(1)->lemma;
+		   	#echo "<pre>Word is entered for this topic</pre>";
+	   		$this->db->insert('userwords', $_POST);
+			redirect('dictionary/word_insert/'.$_POST['topicid'].'/newwordinserted');
+		} 
+                else
+                {
+	   	   #echo "<pre>Not a valid word </pre>";
+		  redirect('dictionary/word_insert/'.$_POST['topicid'].'/notavalidword');
+                }
 
-       }
+         }
+
+
+
+
+      }
 
       function entry_gre_display(){
 
@@ -74,11 +101,12 @@ echo $name;
        ### selects a random word from user created list of words ###
         $this->db->select('uw.lemma'); 
         $this->db->from('userwords uw');
+        $this->db->where('uw.topicid', $this->uri->segment(3));
         $this->db->order_by('lemma','random');
         $this->db->limit(1);
         $userword = $this->db->get();
          
-     
+      # $data['myurisegment'] = $this->uri->segment(3);
 #echo "<pre>";
   #print_r($userword);
 #echo "</pre>";
@@ -108,12 +136,30 @@ echo $name;
           array_push($listOfSynsetid, $rw->synsetid);
       endforeach;
 
+
+#echo "<pre>";
+  #print_r($userword);
+#echo "</pre>";
+
+
+       #Select synonymous of the selected word
+	$this->db->select('wd.wordid, wd.lemma, se.synsetid'); 
+        $this->db->from('words wd');
+        $this->db->join('senses se', 'wd.wordid = se.wordid');
+        $this->db->or_where_in('se.synsetid', $listOfSynsetid );
+        $data['querySyn']= $this->db->get();
+
+
+
       ### select usages of words corresponing to sysnsetid;
 	$this->db->select('sp.sample, sp.synsetid'); 
         $this->db->from('samples sp');
        $this->db->or_where_in('sp.synsetid', $listOfSynsetid );
        $data['queryx']= $this->db->get();
  
+
+
+
 
      #   foreach($data['queryx']->result() as $row): 
      #   endforeach;
@@ -130,37 +176,6 @@ echo $name;
 
 
 
-
-
-
-     function entry_random_display()
-     {
-         #$this->db->select('SELECT * FROM entry ORDER BY RAND() LIMIT 1'):
-       # this-db->select('select word, type, definition, etymology, usages from entry');
-       # $this->db->order_by('word','random');
-        #$this->db->limit(1);
-
- 
-      # $this->db->select('word', 'usages', 'definition','etymology');
-      
-# $where = "word='abate'";
-      # $this-db->where($where);
-     #  $data['query'] = $this->db->get('entry');
-
-
-
-$this->db->select('e.type, e.word, e.usages, e.definition, e.etymology'); 
-$this->db->from('entry e');
- $data['query']= $this->db->get();
-
-
-
-       $this->load->view('dictionary_random_view', $data);
-
-
-
-      
-      }
       
      function content_display()
      {

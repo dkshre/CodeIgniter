@@ -1,27 +1,28 @@
 <html>
 <head>
-<title>dk</title>
+<title><?=$title?></title>
 </head>
 
 <body>
-<h1>sh</h1>
+<h1><?=$heading ?></h1>
 
 
 <?php if($query->num_rows() >0): ?>
 
 	<?php foreach($query->result() as $row): ?>
-	<p><?=$row->word ?></p>
-	<p><?=$row->type ?> </p>
-	<p><?=$row->definition ?> </p>
-	<p><?=$row->etymology ?> </p>
-	<p><?=$row->usages ?> </p>
-
+	<p><?=$row->topic ?></p>
+        <?=anchor('dictionary/word_insert/'.$row->topicid,'Enter a new word');?>
+	<?=anchor('dictionary/entry_gre_display/'.$row->topicid,'Start learning');?>
+	<?=anchor('dictionary','See words');?>
 	<hr>	
 	<?php endforeach; ?>
 
 <?php endif; ?>
 
 <p><?=anchor('dictionary','Back to dictionary');?></p>
+
+
+
 
 
 </body>
