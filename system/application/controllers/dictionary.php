@@ -7,38 +7,22 @@ class Dictionary extends Controller{
 	function Dictionary()
 	{
 		parent::Controller();
-               # $this->load->scaffolding('entries');
                $this->load->helper('url');
               $this->load->helper('form');
-             # $this->load->database('dictionary');
+              $this->load->helper('example');
 	}
 
 	function index()
 	{
-              # $this->load->view('blog_view');
 	   	$data['title'] = "Understanding words";
 		$data['heading'] = "All topics home";
             
-               $this->db->select('ut.topicid, ut.topic'); 
-               $this->db->from('usertopics ut');
+               $this->db->select('ut.id, ut.topic'); 
+               $this->db->from('user_topics ut');
                $data['query'] = $this->db->get();
+               $this->load->view('dictionary_view', $data);
 
-                $this->load->view('dictionary_view', $data);
-		#$data['todo'] = array('Clean house', 'eat lunch', 'call mom');
-		#$data['query'] = $this->db->get('entries');
- 		#$this->load->view('blog_view', $data);
 	}
-
-
-
-
-       function entry_insert()
-       {
-           # $this->load->database('dictionary');
-          #  $this->db->insert('entry', $_POST);
- 	  # $data['query'] = $this->db->get('entry');        
- 	  # $this->load->view('dictionary_view', $data);
-       }
 
 
 	function word_insert(){
@@ -54,9 +38,9 @@ class Dictionary extends Controller{
              #(for given topicid there is not preexisted that word
            
         $this->db->select('uw.lemma'); 
-        $this->db->from('userwords uw');
+        $this->db->from('user_words uw');
         $this->db->where('uw.lemma',$_POST['lemma']);
-        $this->db->where('uw.topicid', $_POST['topicid']);
+        $this->db->where('uw.id', $_POST['id']);
         $checkwordinUW = $this->db->get();
    
         $data['message'] = "test"; 
@@ -66,7 +50,7 @@ class Dictionary extends Controller{
 	   #echo $checkwordinUW->row(1)->lemma;
 	  # echo "<pre>word previously entered for this topic</pre>";
 	# $this->load->view('dictionary/word_insert/'.$_POST['topicid'], $data);
-        redirect('dictionary/word_insert/'.$_POST['topicid'].'/preexisted', $data);
+        redirect('dictionary/word_insert/'.$_POST['usertopic_id'].'/preexisted', $data);
 	} 
          else
          {     
@@ -79,13 +63,13 @@ class Dictionary extends Controller{
 		{ 
 			# echo $checkword->row(1)->lemma;
 		   	#echo "<pre>Word is entered for this topic</pre>";
-	   		$this->db->insert('userwords', $_POST);
-			redirect('dictionary/word_insert/'.$_POST['topicid'].'/newwordinserted');
+	   		$this->db->insert('user_words', $_POST);
+			redirect('dictionary/word_insert/'.$_POST['usertopic_id'].'/newwordinserted');
 		} 
                 else
                 {
 	   	   #echo "<pre>Not a valid word </pre>";
-		  redirect('dictionary/word_insert/'.$_POST['topicid'].'/notavalidword');
+		  redirect('dictionary/word_insert/'.$_POST['usertopic_id'].'/notavalidword');
                 }
 
          }
@@ -95,13 +79,13 @@ class Dictionary extends Controller{
 
       }
 
-      function entry_gre_display(){
+      function Entry_gre_display(){
 
 
        ### selects a random word from user created list of words ###
         $this->db->select('uw.lemma'); 
-        $this->db->from('userwords uw');
-        $this->db->where('uw.topicid', $this->uri->segment(3));
+        $this->db->from('user_words uw');
+        $this->db->where('uw.usertopic_id', $this->uri->segment(3));
         $this->db->order_by('lemma','random');
         $this->db->limit(1);
         $userword = $this->db->get();
@@ -159,8 +143,25 @@ class Dictionary extends Controller{
  
 
 
+        $this->db->select('ge.lemma, ge.example'); 
+        $this->db->from('googleexamples ge');
+        $this->db->where('ge.lemma',$wordrow->lemma);
+        $checkwordinGE = $this->db->get();
+    if ($checkwordinGE->num_rows() > 0){
+	echo "example is already found, no need to make a call to google";
+         $data['googleexample'] = $checkwordinGE->row(1)->example;
+     }
+   else {
+        echo " example is NOT found currently, need to get from google";
+       $data['googleexample'] = get_examples_from_google($wordrow->lemma);
+ 
+       $this->db->set('lemma', $wordrow->lemma); 
+       $this->db->set('example',$data['googleexample']);
+     $this->db->insert('googleexamples');
+    }
 
-
+ 
+ 
      #   foreach($data['queryx']->result() as $row): 
      #   endforeach;
 
@@ -174,20 +175,6 @@ class Dictionary extends Controller{
     
       }
 
-
-
-      
-     function content_display()
-     {
-       echo "hello from content_display method of controller";
-
-    #$url = "http://www.google.com";
-    #$str = file_get_contents($url);
-     #echo $str;
-
-       #echo "dfdfdf <div id='dkshre'> hellow world </div>dfdfdfd";
-       # $this->load->view('content_view');
-     }
 
 }
 ?>

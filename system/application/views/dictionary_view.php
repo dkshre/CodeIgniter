@@ -11,8 +11,8 @@
 
 	<?php foreach($query->result() as $row): ?>
 	<p><?=$row->topic ?></p>
-        <?=anchor('dictionary/word_insert/'.$row->topicid,'Enter a new word');?>
-	<?=anchor('dictionary/entry_gre_display/'.$row->topicid,'Start learning');?>
+        <?=anchor('dictionary/word_insert/'.$row->id,'Enter a new word');?>
+	<?=anchor('dictionary/Entry_gre_display/'.$row->id,'Start learning');?>
 	<?=anchor('dictionary','See words');?>
 	<hr>	
 	<?php endforeach; ?>
