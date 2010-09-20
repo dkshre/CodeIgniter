@@ -24,7 +24,7 @@
   //  }
 
 // loop through the session array with foreach
- echo  $_SESSION['dibesh'] ;
+ echo  $_SESSION['dibesh'];
 
   //foreach($_SESSION['wordinsession'] as $key=>$value)
    // {
