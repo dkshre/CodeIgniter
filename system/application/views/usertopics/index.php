@@ -1,30 +1,20 @@
 <html>
 <head>
+
 <title><?=$title?></title>
+
+<link rel="stylesheet" type="text/css" href="/styles/styles.css" />
+
 </head>
 
 <body>
+
 <h1><?=$heading ?></h1>
 
-<style type="text/css">
-	body
-	{
-		background-color:#d0e4fe;
-	}
-       
-</style>
+
 <?php
-// loop through the session array with foreach
-foreach($_SESSION['animals'] as $key=>$value)
-    {
-    // and print out the values
-    echo 'The value of $_SESSION['."'".$key."'".'] is '."'".$value."'".' <br />';
-    }
-
-// loop through the session array with foreach
- echo  $_SESSION['dibesh'];
-
-
+	echo "session:";
+	print_r($_SESSION);
 ?>
 
 <?php if($query->num_rows() >0): ?>

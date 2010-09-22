@@ -6,7 +6,9 @@ class UserTopic extends Model{
 	{
              parent::Model();
 
+
 	}
+
 
         function find($id=0){
 

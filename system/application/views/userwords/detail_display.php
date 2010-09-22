@@ -1,15 +1,19 @@
 <html>
 <head>
 <title><?=$title ?></title>
+<link rel="stylesheet" type="text/css" href="/styles/styles.css" />
+
+
 </head>
 
 <body>
+<?php
+	echo "session:";
+	print_r($_SESSION);
+?>
+
 <h1><?=$heading ?></h1>
 <h2><?=$word ?></h2>
-
-<script type="text/javascript" src="/jsfolder/test.js"></script>
-<script type="text/javascript" src="/jsfolder/jquery-1.4.2"> </script>
-<script type="text/javascript" src="/jsfolder/frameready.js"></script>
 
 
 
@@ -33,20 +37,6 @@
 	 }
 </script>
 
-<style type="text/css">
-	body
-	{
-		background-color:#d0e4fe;
-	}
-       
-        a.lightblue{
-		color:black;
-               cursor:default;
-              text-decoration:none;
-         }
-
-</style>
-
 
 <b>Usage examples</b>
 <?php if($query->num_rows() >0): ?>
@@ -60,7 +50,7 @@
 <!-- calling model to get get example from google -->
 <p><?= $this->userword->get_google_example($word)?></p>
 
-     <?=form_open('userwords/random_detail_display/'.$this->uri->segment(4)); ?> 
+     <?=form_open('userwords/random_detail_display/'.$this->uri->segment(3) .'/'.$this->uri->segment(4)  ); ?> 
         <input type="submit" value="Next Word"/> 
      </from>
         <input type="button" value="Show/Hide" onclick="toggleVisibility();" />
@@ -88,7 +78,7 @@
 
 
 
-<p><?=anchor('userwords/index/'.$this->uri->segment(4),'Back to Topic');?>
+<p><?=anchor('userwords/index/'.$this->uri->segment(3),'Back to Topic');?>
 <?=anchor('usertopics','Back to dictionary');?></p>
 
 

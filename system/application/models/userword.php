@@ -9,20 +9,16 @@ class UserWord extends Model{
 	}
 
 
-	function get_topic($id=0){
-		
-
-         $this->db->select('topic');
-	$this->db->from('user_topics');
-        $this->db->where('id', $id);
-        $data = $this->db->get();
-	//return $this->db->get()->row(1)->topic;
-	if ($data->num_rows() > 0)
-		return  $data->row(1)->topic;
-	else 
-		return "Invalid topic id";
-
-
+	function get_topic($id=0){		 
+		 $this->db->select('topic');
+		$this->db->from('user_topics');
+		$this->db->where('id', $id);
+		$data = $this->db->get();
+		//return $this->db->get()->row(1)->topic;
+		if ($data->num_rows() > 0)
+			return  $data->row(1)->topic;
+		else 
+			return "Invalid topic id";
 	}
 
 
@@ -51,6 +47,37 @@ class UserWord extends Model{
 			return "Word not found";
 		
         }
+
+        function get_nextword_for_topicid_wordid($topicid,$wordid){
+               $this->db->select('id, lemma'); 
+               $this->db->from('user_words ');
+  	       $this->db->order_by('lemma','asc');                     
+	       $this->db->where('usertopic_id', $topicid);
+               $data =  $this->db->get()->result_array();
+
+for($i = 0; $i < sizeof($data); ++$i)
+{
+    if($data[$i]['id'] == $wordid){
+          return $data[$i+1];
+
+}
+}
+               return "error";
+	}
+
+        function get_word_for_id($id=0){
+               $this->db->select('id, lemma'); 
+               $this->db->from('user_words ');                   
+	       $this->db->where('id', $id);
+               $data =  $this->db->get();
+		if ($data->num_rows() > 0)
+			return  $data->row(1)->lemma;
+		else 
+			return "Word not found";
+
+        }
+
+
 
 
        function get_google_example($word='abate'){
