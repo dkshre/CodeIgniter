@@ -5,9 +5,7 @@ class UserWord extends Model{
 	function UserWord()
 	{
              parent::Model();
-
 	}
-
 
 	function get_topic($id=0){		 
 		 $this->db->select('topic');
@@ -21,18 +19,17 @@ class UserWord extends Model{
 			return "Invalid topic id";
 	}
 
-
         function get_words_for_topic($id=0){
 
                $this->db->select('id, lemma'); 
                $this->db->from('user_words ');
   	       $this->db->order_by('lemma','asc');            
 		if($id > 0)
-		     $this->db->where('usertopic_id', $id);
-               
+		     $this->db->where('usertopic_id', $id);             
 		return  $this->db->get();
         }
 
+/*
         function get_a_random_word_for_topic($id=0){
                $this->db->select('id, lemma'); 
                $this->db->from('user_words ');
@@ -47,7 +44,7 @@ class UserWord extends Model{
 			return "Word not found";
 		
         }
-
+*/
         function get_nextword_for_topicid_wordid($topicid,$wordid){
                $this->db->select('id, lemma'); 
                $this->db->from('user_words ');
@@ -55,25 +52,39 @@ class UserWord extends Model{
 	       $this->db->where('usertopic_id', $topicid);
                $data =  $this->db->get()->result_array();
 
-for($i = 0; $i < sizeof($data); ++$i)
-{
-    if($data[$i]['id'] == $wordid){
-          return $data[$i+1];
-
-}
-}
+		for($i = 0; $i < sizeof($data); ++$i)
+		{
+		    if($data[$i]['id'] == $wordid)
+			  return $data[$i+1];
+		}
                return "error";
 	}
+        function get_previousword_for_topicid_wordid($topicid,$wordid){
+               $this->db->select('id, lemma'); 
+               $this->db->from('user_words ');
+  	       $this->db->order_by('lemma','asc');                     
+	       $this->db->where('usertopic_id', $topicid);
+               $data =  $this->db->get()->result_array();
+
+		for($i = 0; $i < sizeof($data); ++$i)
+		{
+		    if($data[$i]['id'] == $wordid)
+			  return $data[$i-1];
+		}
+               return "error";
+	}
+
 
         function get_word_for_id($id=0){
                $this->db->select('id, lemma'); 
                $this->db->from('user_words ');                   
 	       $this->db->where('id', $id);
-               $data =  $this->db->get();
-		if ($data->num_rows() > 0)
-			return  $data->row(1)->lemma;
-		else 
-			return "Word not found";
+               $data =  $this->db->get()->result_array();
+               return $data[0];
+		//if ($data->num_rows() > 0)
+			//return  $data->row(1);
+		//else 
+			//return "Word not found";
 
         }
 

@@ -20,8 +20,7 @@ class UserWords extends Controller{
 
         }
 	
-	function show()
-	{}
+
 	function newx()
 	{
 	   	$data['title'] = "Understanding words";
@@ -77,25 +76,37 @@ class UserWords extends Controller{
 	}
 
 
-       function random_detail_display(){
+       function request_detail_display(){
+  
              $current_topic_id = $this->uri->segment(3);
 	     $current_word_id = $this->uri->segment(4);
 
              $current_word =  $this->userword->get_word_for_id( $current_word_id);
-	     $next_word_array = $this->userword->get_nextword_for_topicid_wordid($current_topic_id,$current_word_id);
 
-		 //print_r($next_word_array); 
-		//echo $next_word_array['lemma'];
+        if( empty($_POST)){
+		  $request_word_array =  $this->userword->get_word_for_id( $current_word_id);
+	  }
+            else 
+	{
+	     if ($_POST['action'] == 'Next Word')
+		  $request_word_array = $this->userword->get_nextword_for_topicid_wordid($current_topic_id,$current_word_id);
+	 
+	      if ($_POST['action'] == 'Previous Word')
+		  $request_word_array = $this->userword->get_previousword_for_topicid_wordid($current_topic_id,$current_word_id);         
+	    
+ 	}
 
-             $data = $this->userword->get_word_detail($next_word_array['lemma']);
+             $data = $this->userword->get_word_detail($request_word_array['lemma']);
 	     $data['title'] = "Word usages";
 	     $data['heading'] = $this->userword->get_topic( $current_topic_id);
-             $data['word']=$next_word_array['lemma'];
-             $data['wordid'] = $next_word_array['id'];
-	     $this->load->view('userwords/random_detail_display', $data);
+             $data['word']=$request_word_array['lemma'];
+             $data['wordid'] = $request_word_array['id'];
+	     $this->load->view('userwords/request_detail_display', $data);
+
 
 	}
 
+/*
         function detail_display()
 	{
 	     $current_word_id = $this->uri->segment(4);
@@ -106,6 +117,7 @@ class UserWords extends Controller{
              $data['word']= $current_word;
 	     $this->load->view('userwords/detail_display', $data);
       }
+*/
 
 	function edit()
 	{}
@@ -113,7 +125,8 @@ class UserWords extends Controller{
 	{}
 	function delete()
 	{}
-
+	function show()
+	{}
 
 
 }

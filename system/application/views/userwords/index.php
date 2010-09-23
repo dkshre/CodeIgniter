@@ -16,7 +16,7 @@
 </p>
 <?php if($query->num_rows() >0): ?>
 	<?php foreach($query->result() as $row): ?>
-      <?=anchor('userwords/detail_display/'.$this->uri->segment(3).'/'.$row->id,$row->lemma);?>
+      <?=anchor('userwords/request_detail_display/'.$this->uri->segment(3).'/'.$row->id,$row->lemma);?>
 	<hr>	
 	<?php endforeach; ?>
 
