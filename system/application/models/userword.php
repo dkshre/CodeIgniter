@@ -110,6 +110,10 @@ class UserWord extends Model{
                return  $googleexample;
           }
 
+       }
+
+       function get_synonyms_for_synset(){
+
        }	
 
        function get_word_detail($word='abate'){
@@ -124,6 +128,9 @@ class UserWord extends Model{
        
 	      #create an array to store list of synsetid of corresponding word
 	       $listOfSynsetid = array();
+
+             // print_r($data['query']->result_array());
+
 	      foreach($data['query']->result() as $rw): 	
 		  array_push($listOfSynsetid, $rw->synsetid);
 	      endforeach;
@@ -131,11 +138,12 @@ class UserWord extends Model{
                    #Select synonymous of the selected word
 		$this->db->select('wd.wordid, wd.lemma, se.synsetid'); 
 		$this->db->from('words wd');
+                  $this->db->order_by('se.synsetid','asc'); 
 		$this->db->join('senses se', 'wd.wordid = se.wordid');
 		$this->db->or_where_in('se.synsetid', $listOfSynsetid );
 		$data['querySyn']= $this->db->get();
-
-
+                //print_r($data['querySyn']->result_array());
+    
 	      ### select usages of words corresponing to sysnsetid;
 		$this->db->select('sp.sample, sp.synsetid'); 
 		$this->db->from('samples sp');
