@@ -1,5 +1,5 @@
 #!/bin/sh
-#
+#This is a test; 
 # Sun VirtualBox
 # VirtualBox Guest Additions installation script for Linux
 
